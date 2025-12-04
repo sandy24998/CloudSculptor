@@ -73,3 +73,9 @@ resource "aws_route_table" "public-route-table" {
     Name = "${var.environment}-public-rt"
   }
 }
+
+resource "aws_route_table_association" "public" {
+count = length(aws_subnet.public-subnet[*].id)
+subnet_id = aws_subnet.public-subnet[count.index].id
+route_table_id = aws_route_table.public-route-table.id
+}
