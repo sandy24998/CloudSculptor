@@ -51,3 +51,14 @@ resource "aws_eip" "nat" {
 
   depends_on = [aws_internet_gateway.igw]
 }
+
+resource "aws_nat_gateway" "nat" {
+  count = length(var.public_subnets)
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id = aws_subnet.public-subnet[count.index].id
+   tags = {
+    Name = "${var.environment}-nat-${var.availability_zones[count.index]}"
+  }
+
+  depends_on = [aws_internet_gateway.igw]
+}
