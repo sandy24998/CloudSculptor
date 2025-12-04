@@ -93,3 +93,9 @@ resource "aws_route_table" "private-route-table" {
     Name = "${var.environment}-private-rt-${var.availability_zones[count.index]}"
   }
 }
+
+resource "aws_route_table_association" "private" {
+  count = length(aws_subnet.private-subnet[*].id)
+  subnet_id = aws_subnet.private-subnet[count.index].id
+  route_table_id = aws_route_table.private-route-table.id
+}
