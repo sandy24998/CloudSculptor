@@ -79,3 +79,17 @@ count = length(aws_subnet.public-subnet[*].id)
 subnet_id = aws_subnet.public-subnet[count.index].id
 route_table_id = aws_route_table.public-route-table.id
 }
+
+resource "aws_route_table" "private-route-table" {
+  count  = length(var.private_subnets)
+  vpc_id = aws_vpc.main-vpc.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat[count.index].id
+  }
+
+  tags = {
+    Name = "${var.environment}-private-rt-${var.availability_zones[count.index]}"
+  }
+}
