@@ -40,3 +40,14 @@ resource "aws_internet_gateway" "igw" {
   }
 
 }
+
+resource "aws_eip" "nat" {
+  count  = length(var.public_subnets)
+  domain = "vpc"
+
+  tags = {
+    Name = "${var.environment}-nat-eip-${count.index}"
+  }
+
+  depends_on = [aws_internet_gateway.igw]
+}
